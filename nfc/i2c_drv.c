@@ -267,7 +267,7 @@ static const struct file_operations nfc_i2c_dev_fops = {
 	.unlocked_ioctl = nfc_dev_ioctl,
 };
 
-int nfc_i2c_dev_probe(struct i2c_client *client, const struct i2c_device_id *id)
+int nfc_i2c_dev_probe(struct i2c_client *client)
 {
 	int ret = 0;
 	struct nfc_dev *nfc_dev = NULL;
@@ -384,21 +384,17 @@ err:
 	return ret;
 }
 
-int nfc_i2c_dev_remove(struct i2c_client *client)
+void nfc_i2c_dev_remove(struct i2c_client *client)
 {
-	int ret = 0;
 	struct nfc_dev *nfc_dev = NULL;
 
 	pr_info("%s: remove device\n", __func__);
 	nfc_dev = i2c_get_clientdata(client);
 	if (!nfc_dev) {
 		pr_err("%s: device doesn't exist anymore\n", __func__);
-		ret = -ENODEV;
-		return ret;
 	}
 	if (nfc_dev->dev_ref_count > 0) {
 		pr_err("%s: device already in use\n", __func__);
-		return -EBUSY;
 	}
 	device_init_wakeup(&client->dev, false);
 	free_irq(client->irq, nfc_dev);
@@ -409,7 +405,6 @@ int nfc_i2c_dev_remove(struct i2c_client *client)
 	kfree(nfc_dev->read_kbuf);
 	kfree(nfc_dev->write_kbuf);
 	kfree(nfc_dev);
-	return ret;
 }
 
 int nfc_i2c_dev_suspend(struct device *device)

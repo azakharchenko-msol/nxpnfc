@@ -205,4 +205,6 @@ int configure_gpio(unsigned int gpio, int flag);
 void gpio_set_ven(struct nfc_dev *nfc_dev, int value);
 void gpio_free_all(struct nfc_dev *nfc_dev);
 int validate_nfc_state_nci(struct nfc_dev *nfc_dev);
+void set_valid_gpio(int gpio, int value);
+int get_valid_gpio(int gpio);
 #endif /* _COMMON_H_ */
