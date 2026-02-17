@@ -67,7 +67,7 @@ int nfc_parse_dt(struct device *dev, struct platform_configs *nfc_configs,
 void set_valid_gpio(int gpio, int value)
 {
 	if (gpio_is_valid(gpio)) {
-		pr_debug("%s: gpio %d value %d\n", __func__, gpio, value);
+		pr_info("%s: gpio %d value %d\n", __func__, gpio, value);
 		gpio_set_value(gpio, value);
 		/* hardware dependent delay */
 		usleep_range(NFC_GPIO_SET_WAIT_TIME_US,
@@ -81,7 +81,7 @@ int get_valid_gpio(int gpio)
 
 	if (gpio_is_valid(gpio)) {
 		value = gpio_get_value(gpio);
-		pr_debug("%s: gpio %d value %d\n", __func__, gpio, value);
+		pr_info("%s: gpio %d value %d\n", __func__, gpio, value);
 	}
 	return value;
 }
@@ -91,7 +91,7 @@ void gpio_set_ven(struct nfc_dev *nfc_dev, int value)
 	struct platform_gpio *nfc_gpio = &nfc_dev->configs.gpio;
 
 	if (gpio_get_value(nfc_gpio->ven) != value) {
-		pr_debug("%s: value %d\n", __func__, value);
+		pr_info("%s: value %d\n", __func__, value);
 
 		gpio_set_value(nfc_gpio->ven, value);
 		/* hardware dependent delay */
@@ -104,7 +104,7 @@ int configure_gpio(unsigned int gpio, int flag)
 {
 	int ret;
 
-	pr_debug("%s: nfc gpio [%d] flag [%01x]\n", __func__, gpio, flag);
+	pr_info("%s: nfc gpio [%d] flag [%01x]\n", __func__, gpio, flag);
 	if (gpio_is_valid(gpio)) {
 		ret = gpio_request(gpio, "nfc_gpio");
 		if (ret) {
@@ -115,11 +115,11 @@ int configure_gpio(unsigned int gpio, int flag)
 		/* set direction and value for output pin */
 		if (flag & GPIO_OUTPUT) {
 			ret = gpio_direction_output(gpio, (GPIO_HIGH & flag));
-			pr_debug("%s: nfc o/p gpio %d level %d\n", __func__,
+			pr_info("%s: nfc o/p gpio %d level %d\n", __func__,
 				 gpio, gpio_get_value(gpio));
 		} else {
 			ret = gpio_direction_input(gpio);
-			pr_debug("%s: nfc i/p gpio %d\n", __func__, gpio);
+			pr_info("%s: nfc i/p gpio %d\n", __func__, gpio);
 		}
 
 		if (ret) {
@@ -137,7 +137,7 @@ int configure_gpio(unsigned int gpio, int flag)
 				gpio_free(gpio);
 				return ret;
 			}
-			pr_debug("%s: gpio_to_irq successful [%d]\n", __func__,
+			pr_info("%s: gpio_to_irq successful [%d]\n", __func__,
 				 gpio);
 			return ret;
 		}
@@ -164,7 +164,7 @@ void gpio_free_all(struct nfc_dev *nfc_dev)
 
 void nfc_misc_unregister(struct nfc_dev *nfc_dev, int count)
 {
-	pr_debug("%s: entry\n", __func__);
+	pr_info("%s: entry\n", __func__);
 	device_destroy(nfc_dev->nfc_class, nfc_dev->devno);
 	cdev_del(&nfc_dev->c_dev);
 	class_destroy(nfc_dev->nfc_class);
@@ -300,7 +300,7 @@ long nfc_dev_ioctl(struct file *pfile, unsigned int cmd, unsigned long arg)
 	if (!nfc_dev)
 		return -ENODEV;
 
-	pr_debug("%s: cmd = %x arg = %zx\n", __func__, cmd, arg);
+	pr_info("%s: cmd = %x arg = %zx\n", __func__, cmd, arg);
 	if( cmd == NFC_SET_PWR ){
 		ret = nfc_ioctl_power_states(nfc_dev, arg);
 	} else {
@@ -315,7 +315,7 @@ int nfc_dev_open(struct inode *inode, struct file *filp)
 	struct nfc_dev *nfc_dev =
 		container_of(inode->i_cdev, struct nfc_dev, c_dev);
 
-	pr_debug("%s: %d, %d\n", __func__, imajor(inode), iminor(inode));
+	pr_info("%s: %d, %d\n", __func__, imajor(inode), iminor(inode));
 
 	mutex_lock(&nfc_dev->dev_ref_mutex);
 
@@ -336,7 +336,7 @@ int nfc_dev_close(struct inode *inode, struct file *filp)
 	struct nfc_dev *nfc_dev =
 		container_of(inode->i_cdev, struct nfc_dev, c_dev);
 
-	pr_debug("%s: %d, %d\n", __func__, imajor(inode), iminor(inode));
+	pr_info("%s: %d, %d\n", __func__, imajor(inode), iminor(inode));
 	mutex_lock(&nfc_dev->dev_ref_mutex);
 	if (nfc_dev->dev_ref_count == 1) {
 		nfc_dev->nfc_disable_intr(nfc_dev);

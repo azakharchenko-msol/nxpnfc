@@ -107,7 +107,7 @@ int i2c_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 	struct i2c_dev *i2c_dev = &nfc_dev->i2c_dev;
 	struct platform_gpio *nfc_gpio = &nfc_dev->configs.gpio;
 
-	pr_debug("%s: reading %zu bytes.\n", __func__, count);
+	pr_info("%s: reading %zu bytes.\n", __func__, count);
 
 	if (timeout > NCI_CMD_RSP_TIMEOUT_MS)
 		timeout = NCI_CMD_RSP_TIMEOUT_MS;
@@ -179,7 +179,7 @@ int i2c_write(struct nfc_dev *nfc_dev, const char *buf, size_t count,
 	if (count > MAX_DL_BUFFER_SIZE)
 		count = MAX_DL_BUFFER_SIZE;
 
-	pr_debug("%s: writing %zu bytes.\n", __func__, count);
+	pr_info("%s: writing %zu bytes.\n", __func__, count);
 	/*
 	 * Wait for any pending read for max 15ms before write
 	 * This is to avoid any packet corruption during read, when
@@ -275,7 +275,7 @@ int nfc_i2c_dev_probe(struct i2c_client *client)
 	struct platform_configs nfc_configs;
 	struct platform_gpio *nfc_gpio = &nfc_configs.gpio;
 
-	pr_debug("%s: enter\n", __func__);
+	pr_info("%s: enter\n", __func__);
 	/* retrieve details of gpios from dt */
 	ret = nfc_parse_dt(&client->dev, &nfc_configs, PLATFORM_IF_I2C);
 	if (ret) {

@@ -148,7 +148,7 @@ int nfc_spi_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 	struct spi_dev *spi_dev = &nfc_dev->spi_dev;
 	struct platform_gpio *nfc_gpio = &nfc_dev->configs.gpio;
 
-	pr_debug("%s: reading %zu bytes.\n", __func__, count);
+	pr_info("%s: reading %zu bytes.\n", __func__, count);
 
 	if (timeout > NCI_CMD_RSP_TIMEOUT_MS)
 		timeout = NCI_CMD_RSP_TIMEOUT_MS;
@@ -228,7 +228,7 @@ int nfc_spi_write(struct nfc_dev *nfc_dev, const char *buf, size_t count,
 	if (count > MAX_DL_BUFFER_SIZE + PREFIX_LENGTH)
 		count = MAX_DL_BUFFER_SIZE + PREFIX_LENGTH;
 
-	pr_debug("%s: writing %zu bytes.\n", __func__, count);
+	pr_info("%s: writing %zu bytes.\n", __func__, count);
 	/*
 	 * Wait for any pending read for max 15ms before write
 	 * This is to avoid any packet corruption during read, when
@@ -269,7 +269,7 @@ int nfc_spi_write(struct nfc_dev *nfc_dev, const char *buf, size_t count,
 		if ((nfc_dev->spi_dev.tmp_read_kbuf[0] !=
 		     MISO_VAL_ON_WRITE_SUCCESS) &&
 		    (retry_cnt >= max_retry_cnt)) {
-			pr_debug("%s, Write failed returning -1 ", __func__);
+			pr_info("%s, Write failed returning -1 ", __func__);
 			return 0;
 		} else if (ret <= 0 && (nfc_dev->spi_dev.tmp_read_kbuf[0] !=
 					MISO_VAL_ON_WRITE_SUCCESS)) {
@@ -346,7 +346,7 @@ int nfc_spi_dev_probe(struct spi_device *client)
 	unsigned int max_speed_hz;
 	struct device_node *np = client->dev.of_node;
 
-	pr_debug("%s: enter\n", __func__);
+	pr_info("%s: enter\n", __func__);
 	/* retrieve details of gpios from dt */
 	ret = nfc_parse_dt(&client->dev, &nfc_configs, PLATFORM_IF_SPI);
 	if (ret) {
