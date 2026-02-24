@@ -97,7 +97,7 @@ static irqreturn_t i2c_irq_handler(int irq, void *dev_id)
 
 	i2c_disable_irq(nfc_dev);
 	wake_up(&nfc_dev->read_wq);
-
+	pr_info("%s: IRQ handled.\n", __func__);
 	return IRQ_HANDLED;
 }
 
