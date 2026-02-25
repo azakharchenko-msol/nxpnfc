@@ -168,9 +168,7 @@ int i2c_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 	}
 	// Log the bytes that were read
 	pr_info("%s: read %d bytes: ", __func__, ret);
-	for (int i = 0; i < ret; i++) {
-		pr_info("0x%02x ", buf[i]);
-	}
+    print_hex_dump(KERN_INFO, "i2c_read: read bytes: ", DUMP_PREFIX_NONE, 16, 1, buf, ret, false);
 	pr_info("\n");
 
 err:
@@ -221,9 +219,7 @@ int i2c_write(struct nfc_dev *nfc_dev, const char *buf, size_t count,
 			break;
 	}
 	pr_info("%s: written: ", __func__);
-    for (int i = 0; i < ret; i++) {
-        pr_info("0x%02x ", buf[i]);
-    }
+	print_hex_dump(KERN_INFO, "i2c_write: written: ", DUMP_PREFIX_NONE, 16, 1, buf, ret, false);
     pr_info("\n");
 	return ret;
 }
