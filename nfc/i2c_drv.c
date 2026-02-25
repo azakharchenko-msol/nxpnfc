@@ -135,6 +135,7 @@ int i2c_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 						goto err;
 					}
 				} else {
+					pr_info("Waiting for interrupt to start reading");
 					ret = wait_event_interruptible(
 						nfc_dev->read_wq,
 						!i2c_dev->irq_enabled);
@@ -165,6 +166,13 @@ int i2c_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 		pr_err("%s: returned %d\n", __func__, ret);
 		goto err;
 	}
+	// Log the bytes that were read
+	pr_info("%s: read %d bytes: ", __func__, ret);
+	for (int i = 0; i < ret; i++) {
+		pr_info("0x%02x ", buf[i]);
+	}
+	pr_info("\n");
+
 err:
 	return ret;
 }
@@ -212,6 +220,11 @@ int i2c_write(struct nfc_dev *nfc_dev, const char *buf, size_t count,
 		} else if (ret == count)
 			break;
 	}
+	pr_info("%s: written: ", __func__);
+    for (int i = 0; i < ret; i++) {
+        pr_info("0x%02x ", buf[i]);
+    }
+    pr_info("\n");
 	return ret;
 }
 
