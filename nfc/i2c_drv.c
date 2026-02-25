@@ -135,7 +135,7 @@ int i2c_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 						goto err;
 					}
 				} else {
-					pr_info("Waiting for interrupt to start reading");
+					pr_info("%s: waiting for interrupt to start reading\n", __func__);
 					ret = wait_event_interruptible(
 						nfc_dev->read_wq,
 						!i2c_dev->irq_enabled);
