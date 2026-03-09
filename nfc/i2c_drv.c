@@ -135,14 +135,16 @@ int i2c_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 						goto err;
 					}
 				} else {
-					pr_info("%s: waiting for interrupt to start reading\n", __func__);
-					ret = wait_event_interruptible(
+					pr_info("%s: waiting for interrupt to start reading (max 100ms)\n", __func__);
+					ret = wait_event_interruptible_timeout(
 						nfc_dev->read_wq,
-						!i2c_dev->irq_enabled);
-					if (ret) {
-						pr_err("%s: err wakeup of wq\n",
-						       __func__);
+						!i2c_dev->irq_enabled,
+						msecs_to_jiffies(100));
+					if (ret < 0) {
+						pr_err("%s: err wakeup of wq\n", __func__);
 						goto err;
+					} else if (ret == 0) {
+						pr_warn("%s: timeout waiting for interrupt, proceeding to read\n", __func__);
 					}
 				}
 			}
