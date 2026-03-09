@@ -150,7 +150,7 @@ int i2c_read(struct nfc_dev *nfc_dev, char *buf, size_t count, int timeout)
 			}
 			i2c_disable_irq(nfc_dev);
 
-			if (gpio_get_value(nfc_gpio->irq))
+			//if (gpio_get_value(nfc_gpio->irq))
 				break;
 			if (!gpio_get_value(nfc_gpio->ven)) {
 				pr_info("%s: releasing read\n", __func__);
